@@ -1,2 +1,2 @@
-# place_recommend
+# Destination Recommendation
 Cloud project: destination recommendation based on Google Place
