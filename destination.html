@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<body>
+	<p>select options:</p>
+
+	<!--ask customer to choose things they care about, and return the sorted result to the same page-->
+	<form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>">
+		<input type="checkbox" name="distance">distance<br>
+		<input type="checkbox" name="hour">opening hour<br>
+		<input type="submit">
+	</form>
+
+
+	<!--based on the cumstomer's choice, sort-->
+	<?php
+	//connect to DB
+	$servername = "**********";
+	$username = "*********";
+	$password = "*******";
+	$dbname = "mydb";
+
+	//dbname = mydb; fields: place_id, place_name, visited
+	$conn = new mysqli($servername, $username, $password, $dbname);
+	if($conn->connect_error){
+		die("Connect failed:" . $conn->connect-error);
+	}
+
+	//collect value of input field
+	if ($_SERVER["REQUEST_METHOD"]=="POST"){
+		$distance = $_REQUEST['distance'];
+		$price = $_REQUEST['price'];
+	}
+
+	/*
+	if customer cares about distance and price, consider rating, distance, opening hour, price and visited in the history;
+	rate weight:0.3 distance weight:0.2 hour weight:0.2 price weight:0.2 visited:0.1 
+
+	if customers cares about distance, consider rating, distance, opening hour, and visited in the history;
+	rate weight:0.3 distance weight:0.3 hour weight:0.3 visited:0.1 
+
+	if customers cares about price, consider rating, opening hour, price and visited in the history;
+	rate weight:0.3 hour weight:0.3 price weight:0.3 visited:0.1 
+
+	if cumsotmer cares about nothing, consider rating, opening hour and visited only
+	rate weight:0.4 hour weight:0.3 visited:0.3 
+	*/
+
+	/*suppose get the place_id, rate, distance, hour, price from previous step*/
+	class Place{
+		function Place($place_id, $rate, $distance, $hour, $price){
+			$this->place_id = $place_id;
+			$this->rate = $rate;
+			$this->distance = $distance;
+			$this->hour = $hour;
+			$this->price = $price;
+			$this->op1 = 0.3*rate + 0.2*distance + 0.2*hour + 0.2*price +0.1*visited;
+			$this->op2 = 0.3*rate + 0.3*distance + 0.3*hour + 0.1*visited;
+			$this->op3 = 0.3*rate + 0.3*price + 0.3*hour + 0.1*visited;
+			$this->op4 = 0.4*rate + 0.3*hour + 0.3*visited;
+		}
+	}
+	
+	
+
+	if(!empty($distance) && empty(price)){
+		target = 
+	}
+
+	if(empty($distance) && !empty(price)){
+
+	}
+
+	if (empty($distance) && empty(price)){
+		$sql_visit = "SELECT palce_id, visited FROM mydb";
+		$result_visit = $conn->query($sql_visit);
+		if ($result_visit->num_rows >0 ){
+
+		}
+	}
+	else if(empty
+
+
+
+	//if the place is chosen, add 1 to "visited"
+	$sql = "INSERT INTO mydb(place_id, place_name, visited)
+	VALUES ('***********', '***************', visited+1)";
+	if($conn->query($sql) == TRUE){
+		echo "";
+	} else {
+		echo "Erro:" . $sql . "<br>" . $conn->error;
+	}
+
+	$conn->close();
+	
+	?>
+
+</body>
+</html>
