@@ -68,9 +68,10 @@
     <input id="pac-input" class="controls" type="text" placeholder="Search Box">
     <div id="map"></div>
     <script>
+    
 // This example adds a search box to a map, using the Google Place Autocomplete
-// feature. People can enter geographical searches. The search box will return a
-// pick list containing a mix of places and predicted search terms.
+// feature. People can enter geographical searches. The search box will return
+// a pick list containing a mix of places and predicted search terms.
 
 function initAutocomplete() {
   var map = new google.maps.Map(document.getElementById('map'), {
@@ -111,6 +112,9 @@ function initAutocomplete() {
 
     // For each place, get the icon, name and location.
     var bounds = new google.maps.LatLngBounds();
+    <?php
+        $file = fopen("places.txt", "w") or die("Unable to open file!");
+    ?>
     places.forEach(function(place) {
       var icon = {
         url: place.icon,
@@ -147,16 +151,31 @@ function initAutocomplete() {
       } else {
         bounds.extend(place.geometry.location);
       }
+      
+      txt = place.name+' '+place.place_id+' '+place.website+' '+place.rating
+      <?php
+        fwrite($file, $txt);
+      ?>
+      location = place.geometry.location
+      txt = ' '+place.type+' '+location.lat+' '+location.lng+'\n'
+      <?php
+        fwrite($file, $txt);
+      ?>
+      
     });
+    <?php
+      fwrite($file, "end")
+      fclose($file);
+    ?>
     map.fitBounds(bounds);
   });
   // [END region_getplaces]
-  
-  
+
 }
 
 
     </script>
+    <!--script src="sort.js"></script-->
     <script src="https://maps.googleapis.com/maps/api/js?libraries=places&callback=initAutocomplete"
          async defer></script>
   </body>
