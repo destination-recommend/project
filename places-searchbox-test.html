@@ -26,7 +26,7 @@
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
       }
 
-      #place-input {
+      #pac-input {
         background-color: #fff;
         font-family: Roboto;
         font-size: 15px;
@@ -66,7 +66,7 @@
     </style>
   </head>
   <body>
-    <input id="place-input" class="controls" type="text" placeholder="Search Box">
+    <input id="pac-input" class="controls" type="text" placeholder="Search Box">
     <div id="map"></div>
     <script>
     
@@ -84,15 +84,8 @@ function initAutocomplete() {
 
   var infowindow = new google.maps.InfoWindow();
   
-  service.textSearch({
-    query: "starbucks",
-    //types: ['store']
-  }, callback);
-  
-  
-  
   // Create the search box and link it to the UI element.
-  var input = document.getElementById('place-input');
+  var input = document.getElementById('pac-input');
   
   var searchBox = new google.maps.places.SearchBox(input);
   map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
@@ -174,45 +167,6 @@ function initAutocomplete() {
 
   
 }
-
-  function callback(results, status) {
-    if (status === google.maps.places.PlacesServiceStatus.OK) {
-      for (var i = 0; i < results.length; i++) {
-        place=results[i];
-        var service = new google.maps.places.PlacesService(map);
-        service.getDetails({
-            placeId: place.place_id
-          }, function(place, status) {
-            if (status === google.maps.places.PlacesServiceStatus.OK) {
-              var marker = new google.maps.Marker({
-                map: map,
-                position: place.geometry.location
-              });
-              google.maps.event.addListener(marker, 'click', function() {
-                infowindow.setContent(place.name+'<p><a href='+place.website+'>'+place.website+'</a>'+'</p>');
-                infowindow.open(map, this);
-              });
-            }
-        });
-    }
-  }
-  
-  function createMarker(place) {
-    var placeLoc = place.geometry.location;
-    var marker = new google.maps.Marker({
-      map: map,
-      position: place.geometry.location
-    });
-    
-    google.maps.event.addListener(marker, 'click', function() {
-      
-      infowindow.setContent(place.place_id);
-      infowindow.open(map, this);
-    });
-  }
-  
-}
-
 
     </script>
     <!--script src="sort.js"></script-->
