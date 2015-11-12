@@ -2,6 +2,7 @@
 <!--Modified from https://developers.google.com/maps/documentation/javascript/examples-->
 <html>
   <head>
+    <title>Destination Recommendation Release</title>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
     <style>
@@ -12,7 +13,7 @@
       }
       #map {
         height: 80%;
-        width: 80%
+        width: 80%;
       }
       .controls {
         margin-top: 10px;
@@ -25,7 +26,7 @@
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
       }
 
-      #pac-input {
+      #place-input {
         background-color: #fff;
         font-family: Roboto;
         font-size: 15px;
@@ -65,7 +66,7 @@
     </style>
   </head>
   <body>
-    <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+    <input id="place-input" class="controls" type="text" placeholder="Search Box">
     <div id="map"></div>
     <script>
     
@@ -83,8 +84,16 @@ function initAutocomplete() {
 
   var infowindow = new google.maps.InfoWindow();
   
+  service.textSearch({
+    query: "starbucks",
+    //types: ['store']
+  }, callback);
+  
+  
+  
   // Create the search box and link it to the UI element.
-  var input = document.getElementById('pac-input');
+  var input = document.getElementById('place-input');
+  
   var searchBox = new google.maps.places.SearchBox(input);
   map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
@@ -112,9 +121,8 @@ function initAutocomplete() {
 
     // For each place, get the icon, name and location.
     var bounds = new google.maps.LatLngBounds();
-    <?php
-        $file = fopen("places.txt", "w") or die("Unable to open file!");
-    ?>
+    var text = 'start'+'\n';
+    document.write("<iframe src=\"save_text.php?text=" + text + "\"></iframe>");
     places.forEach(function(place) {
       var icon = {
         url: place.icon,
@@ -152,25 +160,57 @@ function initAutocomplete() {
         bounds.extend(place.geometry.location);
       }
       
-      txt = place.name+' '+place.place_id+' '+place.website+' '+place.rating
-      <?php
-        fwrite($file, $txt);
-      ?>
-      location = place.geometry.location
-      txt = ' '+place.type+' '+location.lat+' '+location.lng+'\n'
-      <?php
-        fwrite($file, $txt);
-      ?>
+      var location = place.geometry.location;
+      text = place.name+' '+place.place_id+' '+place.website+' '+
+             place.type+' '+location.lat+' '+location.lng+'\n';
+      document.write("<iframe src=\"save_text.php?text=" + text + "\"></iframe>");
       
     });
-    <?php
-      fwrite($file, "end")
-      fclose($file);
-    ?>
+    var text = 'end'+'\n';
+    document.write("<iframe src=\"save_text.php?text=" + text + "\"></iframe>");
     map.fitBounds(bounds);
   });
   // [END region_getplaces]
 
+  
+}
+
+  function callback(results, status) {
+    if (status === google.maps.places.PlacesServiceStatus.OK) {
+      for (var i = 0; i < results.length; i++) {
+        place=results[i];
+        var service = new google.maps.places.PlacesService(map);
+        service.getDetails({
+            placeId: place.place_id
+          }, function(place, status) {
+            if (status === google.maps.places.PlacesServiceStatus.OK) {
+              var marker = new google.maps.Marker({
+                map: map,
+                position: place.geometry.location
+              });
+              google.maps.event.addListener(marker, 'click', function() {
+                infowindow.setContent(place.name+'<p><a href='+place.website+'>'+place.website+'</a>'+'</p>');
+                infowindow.open(map, this);
+              });
+            }
+        });
+    }
+  }
+  
+  function createMarker(place) {
+    var placeLoc = place.geometry.location;
+    var marker = new google.maps.Marker({
+      map: map,
+      position: place.geometry.location
+    });
+    
+    google.maps.event.addListener(marker, 'click', function() {
+      
+      infowindow.setContent(place.place_id);
+      infowindow.open(map, this);
+    });
+  }
+  
 }
 
 
