@@ -55,8 +55,9 @@
     return results == null ? null : results[1];
   }
   var usr = gup('usr');
-  var keyword = gup('keyword'); 
-   
+  var keyword = gup('keyword');
+  var placesInfo; 
+ 
   var map;
   var infowindow;
 
@@ -81,7 +82,7 @@
       service.textSearch({
         //location: LA,
         //radius: 1000,
-        query: "coffee, LA"//,
+        query: "coffee,LA"//,
         //types: ['store']
       }, callback);
     } else {
@@ -97,8 +98,6 @@
 
         
   function callback(results, status) {
-    var text = 'usr:'+usr+' '+'keyword:'+keyword+'\n';
-      document.write("<iframe src=\"save_text.php?text=" + text + "\"></iframe>");
     if (status === google.maps.places.PlacesServiceStatus.OK) {
       //alert(results.length);
       for (var i = 0; i < results.length; i++) {
@@ -120,10 +119,11 @@
                 infowindow.open(map, this);
               });
               
-              var location = place.geometry.location;
-              text = place.name+' '+place.place_id+' '+place.website+' '+
-                     place.type+' '+location.lat+' '+location.lng+'\n';
-              document.write("<iframe src=\"save_text.php?text=" + text + "\"></iframe>");
+              //var location = place.geometry.location;
+              
+	      placesInfo = placesInfo+
+		     place.name+' '+place.place_id+' '+place.website+' '+
+                     place.type+'\n';
         
             } else {
               //alert(status);
@@ -132,8 +132,6 @@
 
       }
     }
-    var text = 'end'+'\n';
-      document.write("<iframe src=\"save_text.php?text=" + text + "\"></iframe>");
   }
 
   function createMarker(place) {
@@ -149,6 +147,11 @@
       infowindow.open(map, this);
     });
   }
+  //alert(placesInfo);
+  var text = 'usr:'+usr+' '+'keyword:'+keyword+'\n'+placesInfo+'end'+'\n';
+  
+  document.write("<iframe id=out src=\"save_text.php?text=" + text + "\"></iframe>");
+ // document.write("<iframe src=\"save_text.php?text=" + text + "\" width=0 height=0></iframe>");
 
   </script>
   <script src="https://maps.googleapis.com/maps/api/js?signed_in=true&libraries=places&callback=initMap" async defer></script>
