@@ -108,6 +108,7 @@
         service.getDetails({
             placeId: place.place_id
           }, function(place, status) {
+            var responseCount = 0;
             if (status === google.maps.places.PlacesServiceStatus.OK) {
               var marker = new google.maps.Marker({
                 map: map,
@@ -119,40 +120,38 @@
                 infowindow.open(map, this);
               });
               
-              //var location = place.geometry.location;
+              // Change format or Add more variables: do not exceed 2000
               
-	      placesInfo = placesInfo+
-		     place.name+' '+place.place_id+' '+place.website+' '+
-                     place.type+'\n';
-        
+              //var location = place.geometry.location;
+              placesInfo = placesInfo+
+                place.name+' '+place.place_id+' '+place.website+' '+
+                place.types+'\n'; 
+              
             } else {
               //alert(status);
             }
+              
         });
 
       }
     }
   }
 
-  function createMarker(place) {
-    var placeLoc = place.geometry.location;
-    var marker = new google.maps.Marker({
-      map: map,
-      position: place.geometry.location
-    });
-    
-    google.maps.event.addListener(marker, 'click', function() {
-      
-      infowindow.setContent(place.place_id);
-      infowindow.open(map, this);
-    });
-  }
   //alert(placesInfo);
-  var text = 'usr:'+usr+' '+'keyword:'+keyword+'\n'+placesInfo+'end'+'\n';
-  
-  document.write("<iframe id=out src=\"save_text.php?text=" + text + "\"></iframe>");
- // document.write("<iframe src=\"save_text.php?text=" + text + "\" width=0 height=0></iframe>");
 
   </script>
+  <iframe id=out ></iframe>
   <script src="https://maps.googleapis.com/maps/api/js?signed_in=true&libraries=places&callback=initMap" async defer></script>
+  
+  <script>
+  // Have to wait for the responses: currently should be >4000
+  setTimeout(output,4000);
+  function output() {
+    var text = 'usr:'+usr+' '+'keyword:'+keyword+'\n'+placesInfo+'end'+'\n';
+    alert(text);
+    document.getElementByID("out").src="\"save_text.php?text=" + text + "\"";
+    //document.write("<iframe id=out src=\"save_text.php?text=" + text + "\"></iframe>");
+    // document.write("<iframe src=\"save_text.php?text=" + text + "\" width=0 height=0></iframe>");
+  }
+  </script>
 </html>
