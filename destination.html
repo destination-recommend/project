@@ -6,7 +6,7 @@
 	<!--ask customer to choose things they care about, and return the sorted result to the same page-->
 	<form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>">
 		<input type="checkbox" name="distance">distance<br>
-		<input type="checkbox" name="hour">opening hour<br>
+		<input type="checkbox" name="price">opening hour<br>
 		<input type="submit">
 	</form>
 
@@ -22,8 +22,9 @@
 	//dbname = mydb; fields: place_id, place_name, visited
 	$conn = new mysqli($servername, $username, $password, $dbname);
 	if($conn->connect_error){
-		die("Connect failed:" . $conn->connect-error);
+		die("Connect failed:" . $conn->connect_error);
 	}
+	echo "Connected successfully";
 
 	//collect value of input field
 	if ($_SERVER["REQUEST_METHOD"]=="POST"){
@@ -44,8 +45,9 @@
 	if cumsotmer cares about nothing, consider rating, opening hour and visited only
 	rate weight:0.4 hour weight:0.3 visited:0.3 
 	*/
+ 
 
-	/*suppose get the place_id, rate, distance, hour, price from previous step*/
+	/*建立place class*/
 	class Place{
 		function Place($place_id, $rate, $distance, $hour, $price){
 			$this->place_id = $place_id;
@@ -53,37 +55,65 @@
 			$this->distance = $distance;
 			$this->hour = $hour;
 			$this->price = $price;
-			$this->op1 = 0.3*rate + 0.2*distance + 0.2*hour + 0.2*price +0.1*visited;
-			$this->op2 = 0.3*rate + 0.3*distance + 0.3*hour + 0.1*visited;
-			$this->op3 = 0.3*rate + 0.3*price + 0.3*hour + 0.1*visited;
-			$this->op4 = 0.4*rate + 0.3*hour + 0.3*visited;
-		}
-	}
-	
-	
-
-	if(!empty($distance) && empty(price)){
-		target = 
-	}
-
-	if(empty($distance) && !empty(price)){
-
-	}
-
-	if (empty($distance) && empty(price)){
-		$sql_visit = "SELECT palce_id, visited FROM mydb";
-		$result_visit = $conn->query($sql_visit);
-		if ($result_visit->num_rows >0 ){
+			$this->op1 = 0.3 * $rate + 0.2 * $distance + 0.2 * $hour + 0.2 * $price +0.1 * $visited;
+			$this->op2 = 0.3 * $rate + 0.3 * $distance + 0.3 * $hour + 0.1 * $visited;
+			$this->op3 = 0.3 * $rate + 0.3 * $price + 0.3 * $hour + 0.1 * $visited;
+			$this->op4 = 0.4 * $rate + 0.3 * $hour + 0.3 * $visited;
+			$this->score = 0;
 
 		}
 	}
-	else if(empty
+
+
+	/*place 结果会用url传给php, php用 $_GET['text']获取*/  /*问题： 会传过来几个结果 几个结果是什么形式保存的*/
+	$place_id = $_GET['place_id'];
+	$rate = $_GET['rate'];
+	$distance = $_GET['distance'];
+	$hour = $_GET['hour'];
+	$price = $_GET['price'];
+
+	/*跟数据库的place_id进行比较 如果存在 就把visit提出来*/
+	$sql = "SELECT visited FROM mydb WHERE id = $place_id";
+	$result = $conn -> query($sql);
+	if ($result > 0){
+		$visited = $result;
+	}
+
+	/*建一个新的place object*/
+	$place1 = new Place($place_id, $rate, $distance, $hour, $price);
+	
+
+	/*对于每一个place object都要给一个分数，*/ 
+	if(empty($distance) && empty(price)){
+		place1->score = place1->op4;
+	}
+	else if(empty($distance) && !empty(price)){
+		place1->score = place1->op3;
+
+	}
+	else if (!empty($distance) && empty(price)){
+		place1->score = place1->op2;
+	}
+	else{
+		place1->score = place1->op1;
+	}
+
+	//比较所有place的分数 分数最高的在最前面
+	$arrlength = 0;
+	$scores = array();
+	while($arrlength != $totalnumber){
+		//把所有的 id->score 加到 scores 数列里
+
+	}
+
+	rsort($scores);
+	echo $place_id;
+	echo $place_name;
 
 
 
-	//if the place is chosen, add 1 to "visited"
-	$sql = "INSERT INTO mydb(place_id, place_name, visited)
-	VALUES ('***********', '***************', visited+1)";
+	//if the place is chosen, add 1 to "visited"  aka: UPDATA
+	$sql_update = "UPDATA mydb SET visited=visited+1 WHERE id = $place_id"
 	if($conn->query($sql) == TRUE){
 		echo "";
 	} else {
