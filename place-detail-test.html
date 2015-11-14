@@ -39,6 +39,17 @@
     </style>
   </head>
   <body>
+    <h1>Where are we going</h1>
+    <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>">
+      Search Box:
+      <input type="text" name="search" value="search..."><br>
+      
+      select options(check if you want to consider it):<br>
+      <input type="checkbox" name="distance">distance<br>
+      <input type="checkbox" name="price">price<br>
+      <input type="submit">
+    </form>
+
     <!--input id="pac-input" class="controls" type="text"
         placeholder="Enter a word"-->
     <div id="map"></div>
@@ -54,6 +65,7 @@
     var results = regex.exec( url );
     return results == null ? null : results[1];
   }
+
   var usr = gup('usr');
   var keyword = gup('keyword');
   var placesInfo; 
@@ -62,7 +74,6 @@
   var infowindow;
 
   function initMap() {
-    
     // LA
     var LA = {lat: 34.0800, lng: -118.2500};
     
@@ -93,7 +104,7 @@
         //types: ['store']  
       }, callback);
     }
-    
+    //opennow
   }
 
         
@@ -124,9 +135,8 @@
               
               //var location = place.geometry.location;
               placesInfo = placesInfo+
-                place.name+' '+place.place_id+' '+place.website+' '+
-                place.types+'\n'; 
-              
+                'NAME:'+place.name+'|'+'ID:'+place.place_id+'|'+'RATING:'+place.rating+'|'+'PRICE LEVEL:'+place.price_level+'|'+'WEEKEND:'+place.opening_hours.periods[0].close.time+'|'+'WORKDAY'+place.opening_hours.periods[1].close.time+'|'+'WEBSITE:'+place.website+'^'; 
+              //alert(placesInfo);
             } else {
               //alert(status);
             }
@@ -136,6 +146,7 @@
       }
     }
   }
+
 
   //alert(placesInfo);
 
@@ -147,11 +158,12 @@
   // Have to wait for the responses: currently should be >4000
   setTimeout(output,4000);
   function output() {
-    var text = 'usr:'+usr+' '+'keyword:'+keyword+'\n'+placesInfo+'end'+'\n';
+    //var text = 'usr:'+usr+' '+'keyword:'+keyword+'\n'+placesInfo+'end'+'\n';
+    var text = placesInfo+'\n';
     alert(text);
-    document.getElementByID("out").src="\"save_text.php?text=" + text + "\"";
-    //document.write("<iframe id=out src=\"save_text.php?text=" + text + "\"></iframe>");
-    // document.write("<iframe src=\"save_text.php?text=" + text + "\" width=0 height=0></iframe>");
+    //document.getElementByID("out").src="\'save_text.php?text=' + text + '\'";
+    document.write("<iframe src=\"save_text.php?text=" + text + "\"></iframe>");
+    //document.write("<iframe src=\"save_text.php?text=" + text + "\" width=0 height=0></iframe>");
   }
   </script>
 </html>
