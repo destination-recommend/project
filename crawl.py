@@ -1,4 +1,4 @@
-#terminal python crawl.py "http://url"
+#terminal python crawl.py "http://url"  http://www.changoechopark.com
 import re
 import urllib
 import os
