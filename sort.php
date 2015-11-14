@@ -1,45 +1,29 @@
-
-	<?php
-	//based on the cumstomer's choice, sort
-	//connect to DB
-	$servername = "myEE542";
+<?php
+    $txt = $_GET['text'];
+    
+    $servername = "myEE542";
 	$username = "EE542";
 	$password = "1118";
 	$dbname = "mydb";
 
-	//dbname = mydb; fields: place_id, place_name, visited
-	$conn = new mysqli($servername, $username, $password, $dbname);
-	if($conn->connect_error){
-		echo("Connect failed:" . $conn->connect_error);
-	}
+
+	echo 'welecome to php';
+   
+//dbname = mydb; fields: place_id, place_name, visited
+//	$conn = new mysqli($servername, $username, $password, $dbname);
+//	if($conn->connect_error){
+//		echo("Connect failed:" . $conn->connect_error);
+//	}
 	echo "Connected successfully";
 
-	//collect value of input field
-
-	$Bdistance = $_POST['distance'];
-	$Bprice = $_POST['price'];
-
+//$Bdistance = $_POST['distance'];
+//	$Bprice = $_POST['price'];
+$Bdistance = 1;
+$Bprice = 1;
 	echo 'Bdistance'.$Bdistance;
 	echo 'Bprice'.$Bprice;
-	
 
-	/*
-	if customer cares about distance and price, consider rating, distance, opening hour, price and visited in the history;
-	rate weight:0.3 distance weight:0.2 hour weight:0.2 price weight:0.2 visited:0.1 
-
-	if customers cares about distance, consider rating, distance, opening hour, and visited in the history;
-	rate weight:0.3 distance weight:0.3 hour weight:0.3 visited:0.1 
-
-	if customers cares about price, consider rating, opening hour, price and visited in the history;
-	rate weight:0.3 hour weight:0.3 price weight:0.3 visited:0.1 
-
-	if cumsotmer cares about nothing, consider rating, opening hour and visited only
-	rate weight:0.4 hour weight:0.3 visited:0.3 
-	*/
- 
-
-	/*建立place class*/
-	class Place{
+class Place{
 		function Place($name, $id, $rating, $distance, $hour, $price, $web, $visited){
 			$this->name = $name;
 			$this->id = $id;
@@ -58,25 +42,33 @@
 		}
 	}
 
+	echo 'place created\n';
 
-	
-	$txt = $_GET['text'];
-	$place_array = explode('^',$txt);
+$place_array = explode('^',$txt);
+
+//echo $place_array[0]."<br>";
+//	echo $place_array[1]."<br>";
 	$arrlength = count($place_array);
 
-	$places = array();
+//	echo $arrlength."<br>";
+
+$places = array();
 
 	$max_hour = 0;
 	$min_hour = 1440;
-	$max_visited = 0;
+	$max_visited = 1;
 
-	for($i=0; $i<arrlength; $i++){
+	for($i=0; $i<$arrlength; $i++){
 		$fields = explode('|',$place_array[$i]);
 		//function Place($name, $id, $rating, $price, $hour, $web)
 
 		for ($j=0;$j<6;$j++){
 			if(strcmp($fields[$j],'undefined')==0){
-				$fields[$j]=0;
+		if($j==4||$j==5){
+			$fields[$j]=-1;
+		} else{	
+			$fields[$j]=0;
+		}	
 			}
 		}
 
@@ -97,74 +89,71 @@
 
 		$web = $fields[6];
 
-		$place = new Place($name, $id, $rating, $price, $hour, $web);
-
+		$place = new Place($name, $id,0, $rating, $price, $hour, $web,0);
+echo "<br>";
+echo count($places);
+echo "<br>";
 		array_push($places,$place);
-		$max_hour = max($max_hour,$hour);
+//print_r($places);	
+	$max_hour = max($max_hour,$hour);
 		$min_hour = min($min_hour,$hour);	
 
-		/*跟数据库的place_id进行比较 如果存在 就把visit提出来*/
+		/*跟数据库的place_id进行比较 如果存在 就把visit提出来
 		$sql = "SELECT visited FROM mydb WHERE id = $place_id";
 		$result = $conn -> query($sql);
 		if ($result > 0){
 			$visited = $result;
 		}
 		$max_visited = max($max_visited,$visited);
-
+*/
 	}
 
-	$pair = array();
+	echo "array get";
 
-	for($i=0; $i<count($score); $i++){
-		$places[$i]->hour = ($places[$i]->hour-$min_hour)/($max_hour-$min_hour);
-		$places[$i]->visited = $places[$i]->visited/$max_visited;
+$pair = array();
+
+echo count($places);
+echo "<br>";
+echo 1+10%3;
+	for($i=0; $i<count($places); $i++){
+echo 1+10%3;		
+$place1 = $places[$i];
+$place1->hour = ($place1->hour-$min_hour)/($max_hour-$min_hour+1);
+		$place1->visited = $places[$i]->visited/$max_visited;
 		
-		$place1 = $places[$i];
 
-		if(empty($distance) && empty(price)){
-			place1->score = place1->op4;
+		if(empty($Bdistance) && empty($Bprice)){
+			$place1->score = $place1->op4;
 
 		}
-		else if(empty($distance) && !empty(price)){
-			place1->score = place1->op3;
+		else if(empty($Bdistance) && !empty($Bprice)){
+			$place1->score = $place1->op3;
 		}
-		else if (!empty($distance) && empty(price)){
-			place1->score = place1->op2;
+		else if (!empty($Bdistance) && empty($Bprice)){
+			$place1->score = $place1->op2;
 		}
 		else{
-			place1->score = place1->op1;
+			$place1->score = $place1->op1;
 		}
-		array_push($pair, place1=>place1->score);
-
-	}
-	
-
-	arsort($pair);
-
-	foreach($score as $outcome=>$score)
-    	break;
-    
-
-
-    // zheng($outcome->website);
-
-	echo $outcome->name.<br>;
-	echo $outcome->id.<br>;
-	echo $outcome->rating.<br>;
-	echo $outcome->hour.<br>;
-	echo $outcome->price.<br>;
-	echo $outcome->web.<br>;
-
-
-
-	//if the place is chosen, add 1 to "visited"  aka: UPDATA
-	$sql_update = "UPDATA mydb SET visited=visited+1 WHERE name = $outcome->name"
-	if($conn->query($sql) == TRUE){
-		echo "";
-	} else {
-		echo "Erro:" . $sql . "<br>" . $conn->error;
+		array_push($pair, $place1->score);
 	}
 
-	$conn->close();
-	
-	?>
+echo 'pair getttt';
+
+arsort($pair);
+
+print_r($pair);
+
+   $outcome=$places[0];
+
+
+  //   zheng($outcome->website);
+
+	echo $outcome->name."<br>";
+	echo $outcome->id."<br>";
+	echo $outcome->rating."<br>";
+	echo $outcome->hour."<br>";
+	echo $outcome->price."<br>";
+	echo $outcome->web."<br>";
+echo "end";
+?>
