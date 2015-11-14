@@ -7,7 +7,7 @@ import sys
 
 class Spider_model:
     def _init_(self):
-        os.chdir(r"/Users/zhengqingqing/Desktop/try") # I need change this directory!!!!!!!!!!!
+        os.chdir(r"/var/www/html/")
         newpath=r'picture'
         if os.path.exists(newpath):
             shutil.rmtree(newpath)
@@ -19,7 +19,7 @@ class Spider_model:
 	return html
 
     def getImg(self,html):
-	reg=r'src="(.+?\.jpg|\.png)" pic_ext'
+	reg=r'src="(.+?\.jpg|\.png)" pic_ext'  //modify this 
 	imgre=re.compile(reg)
 	imglist=re.findall(imgre,html)
 	x=0
