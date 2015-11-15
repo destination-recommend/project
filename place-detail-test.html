@@ -135,7 +135,7 @@
               
               //var location = place.geometry.location;
               placesInfo = placesInfo+
-                'NAME:'+place.name+'|'+'ID:'+place.place_id+'|'+'RATING:'+place.rating+'|'+'PRICE LEVEL:'+place.price_level+'|'+'WEEKEND:'+place.opening_hours.periods[0].close.time+'|'+'WORKDAY'+place.opening_hours.periods[1].close.time+'|'+'WEBSITE:'+place.website+'^'; 
+                place.name+'|'+place.place_id+'|'+place.rating+'|'+place.price_level+'|'+place.opening_hours.periods[0].close.time+'|'+place.opening_hours.periods[1].close.time+'|'+place.website+'^'; 
               //alert(placesInfo);
             } else {
               //alert(status);

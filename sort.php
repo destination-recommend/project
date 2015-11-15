@@ -1,11 +1,12 @@
+<?php
 
-	<?php
-	//based on the cumstomer's choice, sort
-	//connect to DB
 	$servername = "myEE542";
 	$username = "EE542";
 	$password = "1118";
 	$dbname = "mydb";
+
+
+	echo 'welecome to php';
 
 	//dbname = mydb; fields: place_id, place_name, visited
 	$conn = new mysqli($servername, $username, $password, $dbname);
@@ -58,11 +59,19 @@
 		}
 	}
 
+	echo 'place created\n';
+
 
 	
 	$txt = $_GET['text'];
 	$place_array = explode('^',$txt);
+
+	echo $place_array[0]."<br>";
+	echo $place_array[1]."<br>";
+
 	$arrlength = count($place_array);
+
+	echo $arrlength."<br>";
 
 	$places = array();
 
@@ -97,21 +106,23 @@
 
 		$web = $fields[6];
 
-		$place = new Place($name, $id, $rating, $price, $hour, $web);
+		$place = new Place($name, $id, $rating, $price, $hour, $web,0);
 
 		array_push($places,$place);
 		$max_hour = max($max_hour,$hour);
 		$min_hour = min($min_hour,$hour);	
 
-		/*跟数据库的place_id进行比较 如果存在 就把visit提出来*/
+		/*跟数据库的place_id进行比较 如果存在 就把visit提出来
 		$sql = "SELECT visited FROM mydb WHERE id = $place_id";
 		$result = $conn -> query($sql);
 		if ($result > 0){
 			$visited = $result;
 		}
 		$max_visited = max($max_visited,$visited);
-
+*/
 	}
+$max_visited = 1;
+	echo "array get";
 
 	$pair = array();
 
@@ -141,6 +152,8 @@
 
 	arsort($pair);
 
+
+
 	foreach($score as $outcome=>$score)
     	break;
     
@@ -148,12 +161,12 @@
 
     // zheng($outcome->website);
 
-	echo $outcome->name.<br>;
-	echo $outcome->id.<br>;
-	echo $outcome->rating.<br>;
-	echo $outcome->hour.<br>;
-	echo $outcome->price.<br>;
-	echo $outcome->web.<br>;
+	echo $outcome->name."<br>";
+	echo $outcome->id."<br>";
+	echo $outcome->rating."<br>";
+	echo $outcome->hour."<br>";
+	echo $outcome->price."<br>";
+	echo $outcome->web."<br>";
 
 
 
@@ -166,5 +179,5 @@
 	}
 
 	$conn->close();
-	
-	?>
+
+?>
