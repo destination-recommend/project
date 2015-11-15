@@ -1,48 +1,38 @@
-
-	<?php
-	//based on the cumstomer's choice, sort
-	//connect to DB
-	$servername = "**********";
-	$username = "*********";
-	$password = "*******";
+<?php
+    $txt = $_GET['text'];
+    
+    $servername = "myEE542";
+	$username = "EE542";
+	$password = "1118";
 	$dbname = "mydb";
 
-	//dbname = mydb; fields: place_id, place_name, visited
-	$conn = new mysqli($servername, $username, $password, $dbname);
-	if($conn->connect_error){
-		die("Connect failed:" . $conn->connect_error);
-	}
+
+	echo 'welecome to php';
+   
+//dbname = mydb; fields: place_id, place_name, visited
+//	$conn = new mysqli($servername, $username, $password, $dbname);
+//	if($conn->connect_error){
+//		echo("Connect failed:" . $conn->connect_error);
+//	}
 	echo "Connected successfully";
 
-	//collect value of input field
-	if ($_SERVER["REQUEST_METHOD"]=="POST"){
-		$distance = $_REQUEST['distance'];
-		$price = $_REQUEST['price'];
-	}
+//$Bdistance = $_POST['distance'];
+//	$Bprice = $_POST['price'];
+$Bdistance = 1;
+$Bprice = 1;
+	echo 'Bdistance'.$Bdistance;
+	echo 'Bprice'.$Bprice;
 
-	/*
-	if customer cares about distance and price, consider rating, distance, opening hour, price and visited in the history;
-	rate weight:0.3 distance weight:0.2 hour weight:0.2 price weight:0.2 visited:0.1 
-
-	if customers cares about distance, consider rating, distance, opening hour, and visited in the history;
-	rate weight:0.3 distance weight:0.3 hour weight:0.3 visited:0.1 
-
-	if customers cares about price, consider rating, opening hour, price and visited in the history;
-	rate weight:0.3 hour weight:0.3 price weight:0.3 visited:0.1 
-
-	if cumsotmer cares about nothing, consider rating, opening hour and visited only
-	rate weight:0.4 hour weight:0.3 visited:0.3 
-	*/
- 
-
-	/*建立place class*/
-	class Place{
-		function Place($place_id, $rate, $distance, $hour, $price){
-			$this->place_id = $place_id;
-			$this->rate = $rate;
+class Place{
+		function Place($name, $id, $rating, $distance, $hour, $price, $web, $visited){
+			$this->name = $name;
+			$this->id = $id;
+			$this->rating = $rating;
 			$this->distance = $distance;
 			$this->hour = $hour;
 			$this->price = $price;
+			$this->web = $web;
+			$this->visited = $visited;
 			$this->op1 = 0.3 * $rate + 0.2 * $distance + 0.2 * $hour + 0.2 * $price +0.1 * $visited;
 			$this->op2 = 0.3 * $rate + 0.3 * $distance + 0.3 * $hour + 0.1 * $visited;
 			$this->op3 = 0.3 * $rate + 0.3 * $price + 0.3 * $hour + 0.1 * $visited;
@@ -52,62 +42,118 @@
 		}
 	}
 
+	echo 'place created\n';
 
-	/*place 结果会用url传给php, php用 $_GET['text']获取*/  /*问题： 会传过来几个结果 几个结果是什么形式保存的*/
-	$place_id = $_GET['place_id'];
-	$rate = $_GET['rate'];
-	$distance = $_GET['distance'];
-	$hour = $_GET['hour'];
-	$price = $_GET['price'];
+$place_array = explode('^',$txt);
 
-	/*跟数据库的place_id进行比较 如果存在 就把visit提出来*/
-	$sql = "SELECT visited FROM mydb WHERE id = $place_id";
-	$result = $conn -> query($sql);
-	if ($result > 0){
-		$visited = $result;
+//echo $place_array[0]."<br>";
+//	echo $place_array[1]."<br>";
+	$arrlength = count($place_array);
+
+//	echo $arrlength."<br>";
+
+$places = array();
+
+	$max_hour = 0;
+	$min_hour = 1440;
+	$max_visited = 1;
+
+	for($i=0; $i<$arrlength; $i++){
+		$fields = explode('|',$place_array[$i]);
+		//function Place($name, $id, $rating, $price, $hour, $web)
+
+		for ($j=0;$j<6;$j++){
+			if(strcmp($fields[$j],'undefined')==0){
+		if($j==4||$j==5){
+			$fields[$j]=-1;
+		} else{	
+			$fields[$j]=0;
+		}	
+			}
+		}
+
+		$name = $fields[0];
+		$id = $fields[1];
+		$rating = $fields[2]/5;
+		$price = $fields[3]/4;
+		//$hour = $fields[4];
+
+		$today =date('N');
+		if($today<6){
+			$close_time = $fields[5];
+		}
+		else{
+			$close_time = $fields[4];
+		}
+		$hour = ((int)$close_time/100 - date('H'))*60+((int)$close_time%100 - date('i'));
+
+		$web = $fields[6];
+
+		$place = new Place($name, $id,0, $rating, $price, $hour, $web,0);
+echo "<br>";
+echo count($places);
+echo "<br>";
+		array_push($places,$place);
+//print_r($places);	
+	$max_hour = max($max_hour,$hour);
+		$min_hour = min($min_hour,$hour);	
+
+		/*跟数据库的place_id进行比较 如果存在 就把visit提出来
+		$sql = "SELECT visited FROM mydb WHERE id = $place_id";
+		$result = $conn -> query($sql);
+		if ($result > 0){
+			$visited = $result;
+		}
+		$max_visited = max($max_visited,$visited);
+*/
 	}
 
-	/*建一个新的place object*/
-	$place1 = new Place($place_id, $rate, $distance, $hour, $price);
-	
+	echo "array get";
 
-	/*对于每一个place object都要给一个分数，*/ 
-	if(empty($distance) && empty(price)){
-		place1->score = place1->op4;
-	}
-	else if(empty($distance) && !empty(price)){
-		place1->score = place1->op3;
+$pair = array();
 
-	}
-	else if (!empty($distance) && empty(price)){
-		place1->score = place1->op2;
-	}
-	else{
-		place1->score = place1->op1;
-	}
+echo count($places);
+echo "<br>";
+echo 1+10%3;
+	for($i=0; $i<count($places); $i++){
+echo 1+10%3;		
+$place1 = $places[$i];
+$place1->hour = ($place1->hour-$min_hour)/($max_hour-$min_hour+1);
+		$place1->visited = $places[$i]->visited/$max_visited;
+		
 
-	//比较所有place的分数 分数最高的在最前面
-	$arrlength = 0;
-	$scores = array();
-	while($arrlength != $totalnumber){
-		//把所有的 id->score 加到 scores 数列里
+		if(empty($Bdistance) && empty($Bprice)){
+			$place1->score = $place1->op4;
 
-	}
-
-	rsort($scores);
-	echo $place_id;
-	echo $place_name;
-
-
-
-	//if the place is chosen, add 1 to "visited"  aka: UPDATA
-	$sql_update = "UPDATA mydb SET visited=visited+1 WHERE id = $place_id"
-	if($conn->query($sql) == TRUE){
-		echo "";
-	} else {
-		echo "Erro:" . $sql . "<br>" . $conn->error;
+		}
+		else if(empty($Bdistance) && !empty($Bprice)){
+			$place1->score = $place1->op3;
+		}
+		else if (!empty($Bdistance) && empty($Bprice)){
+			$place1->score = $place1->op2;
+		}
+		else{
+			$place1->score = $place1->op1;
+		}
+		array_push($pair, $place1->score);
 	}
 
-	$conn->close();
-	
-	?>
+echo 'pair getttt';
+
+arsort($pair);
+
+print_r($pair);
+
+   $outcome=$places[0];
+
+
+  //   zheng($outcome->website);
+
+	echo $outcome->name."<br>";
+	echo $outcome->id."<br>";
+	echo $outcome->rating."<br>";
+	echo $outcome->hour."<br>";
+	echo $outcome->price."<br>";
+	echo $outcome->web."<br>";
+echo "end";
+?>
