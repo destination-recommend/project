@@ -41,8 +41,8 @@ mysql_query($sql,$con);
 
  
 mysql_select_db("myeeb542"，$con);
-mysql_query("INSERT INTO information (FirstName,LastName, Age) 
-VALUES ('Peter', 'Green', '3')");
+mysql_query("INSERT INTO information (PlaceName,UserName,times) 
+VALUES ('Los Angeles', 'Peter', '3')");
  
  
  
