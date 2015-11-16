@@ -1,6 +1,20 @@
 <?php
     $txt = $_GET['text'];
+    $myinfo = $_GET['myinfo'];
+
+    location_array=explode('|',$myinfo);	
     
+    $mylat=location_array[0];
+    $mylng=location_array[1];
+
+    //$lalat=34.0800;
+//$lalng=-118.2500;
+    
+    function getDistance($lat1,$lon1,$lat2,$lon2) {
+  		$dis = sqrt(pow($lat1-$lat2,2)+pow($lng1-$lng2,2));
+  		return $dis;
+	}
+
     $servername = "myEE542";
 	$username = "EE542";
 	$password = "1118";
@@ -44,7 +58,7 @@ class Place{
 
 	echo 'place created\n';
 
-$place_array = explode('^',$txt);
+$place_array = explode('^',$txt); //seperate every place, arrlength is the number of palces returned
 
 //echo $place_array[0]."<br>";
 //	echo $place_array[1]."<br>";
@@ -52,23 +66,27 @@ $place_array = explode('^',$txt);
 
 //	echo $arrlength."<br>";
 
-$places = array();
+$places = array();      // array of object PLACE  "places"
 
 	$max_hour = 0;
 	$min_hour = 1440;
 	$max_visited = 1;
 
-	for($i=0; $i<$arrlength; $i++){
-		$fields = explode('|',$place_array[$i]);
-		//function Place($name, $id, $rating, $price, $hour, $web)
+	$max_dis=0;
+	$min_dis=1000;
 
-		for ($j=0;$j<6;$j++){
+	for($i=0; $i<$arrlength; $i++){         //for every place
+		$fields = explode('|',$place_array[$i]);   //seperate every fields
+		//function Place($name, $id, $rating, $price, $hour, $web)
+		//place from client ($name, $id, $rating, $price, $wnd hour,$week hour, $web,$lat, $lng )
+
+		for ($j=0;$j<9;$j++){
 			if(strcmp($fields[$j],'undefined')==0){
-		if($j==4||$j==5){
-			$fields[$j]=-1;
-		} else{	
-			$fields[$j]=0;
-		}	
+				if($j==4||$j==5){
+					$fields[$j]=-1;
+				} else{	
+					$fields[$j]=0;
+				}	
 			}
 		}
 
@@ -89,14 +107,23 @@ $places = array();
 
 		$web = $fields[6];
 
-		$place = new Place($name, $id,0, $rating, $price, $hour, $web,0);
+		$distance = getDistance($mylat,$mylng,$fields[7],$fields[8]);
+
+		//function Place($name, $id, $rating, $distance, $hour, $price, $web, $visited)
+
+		$place = new Place($name, $id,$rating,$distance, $hour, $price,  $web,0);
 echo "<br>";
 echo count($places);
 echo "<br>";
+
 		array_push($places,$place);
+
 //print_r($places);	
 	$max_hour = max($max_hour,$hour);
 		$min_hour = min($min_hour,$hour);	
+
+		$max_dis=max($distance,$max_dis);
+		$min_dis=min($distance,$min_dis);
 
 		/*跟数据库的place_id进行比较 如果存在 就把visit提出来
 		$sql = "SELECT visited FROM mydb WHERE id = $place_id";
@@ -120,6 +147,8 @@ echo 1+10%3;
 $place1 = $places[$i];
 $place1->hour = ($place1->hour-$min_hour)/($max_hour-$min_hour+1);
 		$place1->visited = $places[$i]->visited/$max_visited;
+
+		$place1->distance=($palce1->distance-$min_dis)/($max-$min_dis+1);
 		
 
 		if(empty($Bdistance) && empty($Bprice)){

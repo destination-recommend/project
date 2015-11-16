@@ -14,6 +14,9 @@
       #map {
         height: 80%;
         width: 80%;
+        left:10px;
+        top:40px;
+
       }
       .controls {
         background-color: #fff;
@@ -36,23 +39,46 @@
       .controls:focus {
         border-color: #4d90fe;
       }
+
+      #header {
+        text-align: center;
+        color:red;
+      }
+
+      #out{
+        top:150px;
+        position: absolute;
+        height: 80%;
+        width: 15%;
+        right: 10px;
+      }
+
+      #formdiv{
+        margin-left:10px;
+      }
+
     </style>
   </head>
   <body>
-    <h1>Where are we going</h1>
-    <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>">
-      Search Box:
-      <input type="text" name="search" value="search..."><br>
-      
-      select options(check if you want to consider it):<br>
-      <input type="checkbox" name="distance">distance<br>
-      <input type="checkbox" name="price">price<br>
-      <input type="submit">
-    </form>
+    <h1 id="header">Where are we going</h1>
+    <div id="formdiv">
+      <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>">
+
+        Search Box:
+        <input type="text" name="search" value="search..."><br>
+        
+        Select options(check if you want to consider it):
+        <input type="checkbox" name="distance">distance 
+        <input type="checkbox" name="price">price
+        <input type="submit">
+      </form>
+    </div>
 
     <!--input id="pac-input" class="controls" type="text"
         placeholder="Enter a word"-->
     <div id="map"></div>
+
+    <iframe id="out" ></iframe>
     
   </body>
   
@@ -76,7 +102,9 @@
   function initMap() {
     // LA
     var LA = {lat: 34.0800, lng: -118.2500};
-    
+
+    //var LA = {mylat, mylng};
+
     map = new google.maps.Map(document.getElementById('map'), {
       center: LA,
       zoom: 15
@@ -100,7 +128,7 @@
       service.nearbySearch({
         location: LA,
         radius: 1000,
-        keyword: "coffee"//,
+        keyword: keyword//,
         //types: ['store']  
       }, callback);
     }
@@ -135,7 +163,7 @@
               
               //var location = place.geometry.location;
               placesInfo = placesInfo+
-                'NAME:'+place.name+'|'+'ID:'+place.place_id+'|'+'RATING:'+place.rating+'|'+'PRICE LEVEL:'+place.price_level+'|'+'WEEKEND:'+place.opening_hours.periods[0].close.time+'|'+'WORKDAY'+place.opening_hours.periods[1].close.time+'|'+'WEBSITE:'+place.website+'^'; 
+                place.name+'|'+place.place_id+'|'+place.rating+'|'+place.price_level+'|'+place.opening_hours.periods[0].close.time+'|'+place.opening_hours.periods[1].close.time+'|'+place.website+'|'+'LOCATION'+place.geometry.location.lat()+place.geometry.location.lng+'^'; 
               //alert(placesInfo);
             } else {
               //alert(status);
@@ -151,7 +179,7 @@
   //alert(placesInfo);
 
   </script>
-  <iframe id=out ></iframe>
+  
   
   <script>
   // Have to wait for the responses: currently should be >4000
@@ -160,8 +188,14 @@
     //var text = 'usr:'+usr+' '+'keyword:'+keyword+'\n'+placesInfo+'end'+'\n';
     var text = placesInfo+'\n';
     alert(text);
-    //document.getElementByID("out").src="\'save_text.php?text=' + text + '\'";
-    document.write("<iframe src=\"sort.php?text=" + text + "\"></iframe>");
+
+    mylat=34.0800;
+    mylng=-118.2500;
+
+    var myinfo = mylat + '|' + mylng;
+
+    document.getElementById("out").src="\'save_text.php?myinfo=' + myinfo + '&text=' + text + '\'";
+    //document.write("<iframe src=\"sort.php?text=" + text + "\"></iframe>");
     //document.write("<iframe src=\"save_text.php?text=" + text + "\" width=0 height=0></iframe>");
   }
   </script>
