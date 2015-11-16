@@ -1,16 +1,14 @@
 <?php
     $txt = $_GET['text'];
-    $myinfo = $_GET['myinfo'];
+ $myinfo = $_GET['myinfo'];
 
-    location_array=explode('|',$myinfo);	
+ $location_array=explode('|',$myinfo);	
     
-    $mylat=location_array[0];
-    $mylng=location_array[1];
+    $mylat=$location_array[0];
+    $mylng=$location_array[1];
 
-    //$lalat=34.0800;
-//$lalng=-118.2500;
     
-    function getDistance($lat1,$lon1,$lat2,$lon2) {
+    function getDistance($lat1,$lng1,$lat2,$lng2) {
   		$dis = sqrt(pow($lat1-$lat2,2)+pow($lng1-$lng2,2));
   		return $dis;
 	}
@@ -56,15 +54,15 @@ class Place{
 		}
 	}
 
-	echo 'place created\n';
 
 $place_array = explode('^',$txt); //seperate every place, arrlength is the number of palces returned
 
-//echo $place_array[0]."<br>";
-//	echo $place_array[1]."<br>";
+
+array_pop($place_array);
+
+
 	$arrlength = count($place_array);
 
-//	echo $arrlength."<br>";
 
 $places = array();      // array of object PLACE  "places"
 
@@ -112,9 +110,7 @@ $places = array();      // array of object PLACE  "places"
 		//function Place($name, $id, $rating, $distance, $hour, $price, $web, $visited)
 
 		$place = new Place($name, $id,$rating,$distance, $hour, $price,  $web,0);
-echo "<br>";
 echo count($places);
-echo "<br>";
 
 		array_push($places,$place);
 
@@ -132,7 +128,7 @@ echo "<br>";
 			$visited = $result;
 		}
 		$max_visited = max($max_visited,$visited);
-*/
+		*/
 	}
 
 	echo "array get";
@@ -141,14 +137,15 @@ $pair = array();
 
 echo count($places);
 echo "<br>";
-echo 1+10%3;
+echo $max_dis,$min_dis;
+echo "<br>";
+echo "<br>";
 	for($i=0; $i<count($places); $i++){
-echo 1+10%3;		
 $place1 = $places[$i];
 $place1->hour = ($place1->hour-$min_hour)/($max_hour-$min_hour+1);
 		$place1->visited = $places[$i]->visited/$max_visited;
 
-		$place1->distance=($palce1->distance-$min_dis)/($max-$min_dis+1);
+		$place1->distance=($palce1->distance-$min_dis)/($max_dis-$min_dis+0.000000001);
 		
 
 		if(empty($Bdistance) && empty($Bprice)){
@@ -165,9 +162,10 @@ $place1->hour = ($place1->hour-$min_hour)/($max_hour-$min_hour+1);
 			$place1->score = $place1->op1;
 		}
 		array_push($pair, $place1->score);
+print_r($place1);
+echo '<br>';
 	}
 
-echo 'pair getttt';
 
 arsort($pair);
 
@@ -185,4 +183,6 @@ print_r($pair);
 	echo $outcome->price."<br>";
 	echo $outcome->web."<br>";
 echo "end";
+
+
 ?>
