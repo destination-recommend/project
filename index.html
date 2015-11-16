@@ -163,7 +163,7 @@
               
               //var location = place.geometry.location;
               placesInfo = placesInfo+
-                place.name+'|'+place.place_id+'|'+place.rating+'|'+place.price_level+'|'+place.opening_hours.periods[0].close.time+'|'+place.opening_hours.periods[1].close.time+'|'+place.website+'|'+place.geometry.location.lat()+place.geometry.location.lng()+'^'; 
+                place.name+'|'+place.place_id+'|'+place.rating+'|'+place.price_level+'|'+place.opening_hours.periods[0].close.time+'|'+place.opening_hours.periods[1].close.time+'|'+place.website+'|'+place.geometry.location.lat()+'|'+place.geometry.location.lng()+'^'; 
               //alert(placesInfo);
             } else {
               //alert(status);
@@ -192,7 +192,7 @@
     mylat=34.0800;
     mylng=-118.2500;
 
-    var myinfo = mylat + '|' + mylng;
+    var myinfo = mylat + '|' + mylng+'\n';
 var source = "http://52.27.92.69/sort.php?myinfo=" + myinfo + "&text=" + text;
 //document.getElementById("out").src = source;    
 //document.getElementById("out").src="\'sort.php?myinfo=' + myinfo + '&text=' + text + '\'";
