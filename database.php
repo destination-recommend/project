@@ -5,7 +5,7 @@ $mysql_password="myeeb542";
 $mysql_database="myeeb542";
 
 $con = mysql_connect($mysql_server_name,$mysql_username,$mysql_password); // connect to database
-echo "connect\n";    
+   
 if (!$con)
   {
   die('Could not connect: ' . mysql_error());
@@ -17,11 +17,13 @@ if (mysqli_connect_errno($con))
  echo "Failed to connect to MySQL: " . mysqli_connect_error();
  } 
  */
- echo "sucess";
+ echo "success";
+ echo "<br />";
  
 if (mysql_query("CREATE DATABASE my_rds ",$con))
   {
   echo "Database created";
+  echo "<br />";
   }
 else
   {
@@ -40,21 +42,28 @@ mysql_query($sql,$con);
 
 
  
-/*mysql_select_db("myeeb542"，$con);
-mysql_query("INSERT INTO information (FirstName,LastName,Age) 
-VALUES ('Peter', 'Green', '3')");
- */
-$query = "INSERT INTO Persons "."(FirstName,LastName, Age) ". "VALUES "."('Peter','Green','3')";
+$fn = "Peter";
+$ln = "Green";
+$age =3;
+$query = "INSERT INTO Persons "."(FirstName,LastName, Age) ". "VALUES "."('$fn','$ln','$age')";
 mysql_select_db('my_rds');
 $retval = mysql_query( $query, $con);
-if(!$retval )
+/*if(!$retval )
 {
   die('Could not enter data: ' . mysql_error());
 }
 echo "Entered data successfully";
-
+*/
  
+mysql_select_db("my_rds", $con);
+$qu= "SELECT * FROM Persons where FirstName ='Peter' and LastName ='Green'";
+$result= mysql_query($qu, $con);
+while($row = mysql_fetch_array($result))
+  {
+  echo $row['Age'];
+  echo "<br />";
  
+ }
  
  
  
