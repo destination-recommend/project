@@ -12,7 +12,7 @@
         padding: 0;
       }
       #map {
-        height: 80%;
+        height: 60%;
         width: 80%;
       }
       .controls {
@@ -53,7 +53,8 @@
     <!--input id="pac-input" class="controls" type="text"
         placeholder="Enter a word"-->
     <div id="map"></div>
-    
+    <iframe id="out" ></iframe>
+  
   </body>
   
   <script>
@@ -151,7 +152,6 @@
   //alert(placesInfo);
 
   </script>
-  <iframe id=out ></iframe>
   
   <script>
   // Have to wait for the responses: currently should be >4000
@@ -159,9 +159,9 @@
   function output() {
     //var text = 'usr:'+usr+' '+'keyword:'+keyword+'\n'+placesInfo+'end'+'\n';
     var text = placesInfo+'\n';
-    alert(text);
-    //document.getElementByID("out").src="\'save_text.php?text=' + text + '\'";
-    document.write("<iframe src=\"sort.php?text=" + text + "\"></iframe>");
+    //alert(text);
+    document.getElementById("out").src="\'save_text.php?text=' + text + '\'";
+    //document.write("<iframe src=\"sort.php?text=" + text + "\"></iframe>");
     //document.write("<iframe src=\"save_text.php?text=" + text + "\" width=0 height=0></iframe>");
   }
   </script>
