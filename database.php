@@ -18,5 +18,20 @@ if (mysqli_connect_errno($con))
  } 
  */
  echo "sucess";
+ 
+ mysql_select_db($mysql_database，$con);
+ mysql_query("INSERT INTO Information (UserName,PlaceName, times) 
+VALUES ('Peter', 'Los Angeles', '3')");
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 
 ?>
