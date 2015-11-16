@@ -1,5 +1,9 @@
 <?php
-    $txt = $_GET['text'];
+$a=(int)(-0.5);
+echo $a;
+echo '<br>';  
+
+$txt = $_GET['text'];
  $myinfo = $_GET['myinfo'];
 
  $location_array=explode('|',$myinfo);	
@@ -9,8 +13,8 @@
 
     
     function getDistance($lat1,$lng1,$lat2,$lng2) {
-  		$dis = sqrt(pow($lat1-$lat2,2)+pow($lng1-$lng2,2));
-  		return $dis;
+  		$dis = (sqrt(pow($lat1-$lat2,2)+pow($lng1-$lng2,2))+0.000001);
+		return $dis;
 	}
 
     $servername = "myEE542";
@@ -45,10 +49,6 @@ class Place{
 			$this->price = $price;
 			$this->web = $web;
 			$this->visited = $visited;
-			$this->op1 = 0.3 * $rate + 0.2 * $distance + 0.2 * $hour + 0.2 * $price +0.1 * $visited;
-			$this->op2 = 0.3 * $rate + 0.3 * $distance + 0.3 * $hour + 0.1 * $visited;
-			$this->op3 = 0.3 * $rate + 0.3 * $price + 0.3 * $hour + 0.1 * $visited;
-			$this->op4 = 0.4 * $rate + 0.3 * $hour + 0.3 * $visited;
 			$this->score = 0;
 
 		}
@@ -57,12 +57,14 @@ class Place{
 
 $place_array = explode('^',$txt); //seperate every place, arrlength is the number of palces returned
 
-
+echo count($place_array);
+echo '..............';
 array_pop($place_array);
 
 
 	$arrlength = count($place_array);
-
+echo $arrlength;
+echo '!!!!!!!!!!!!!!!!!';
 
 $places = array();      // array of object PLACE  "places"
 
@@ -77,12 +79,14 @@ $places = array();      // array of object PLACE  "places"
 		$fields = explode('|',$place_array[$i]);   //seperate every fields
 		//function Place($name, $id, $rating, $price, $hour, $web)
 		//place from client ($name, $id, $rating, $price, $wnd hour,$week hour, $web,$lat, $lng )
-
+$nodist = 0;
 		for ($j=0;$j<9;$j++){
 			if(strcmp($fields[$j],'undefined')==0){
 				if($j==4||$j==5){
 					$fields[$j]=-1;
-				} else{	
+				} else if($j==7||$j==8){
+					$nodist=1;
+				} else {	
 					$fields[$j]=0;
 				}	
 			}
@@ -101,20 +105,22 @@ $places = array();      // array of object PLACE  "places"
 		else{
 			$close_time = $fields[4];
 		}
-		$hour = ((int)$close_time/100 - date('H'))*60+((int)$close_time%100 - date('i'));
+		$hour = max(((int)$close_time/100 - date('H')),0)*60+max(((int)$close_time%100 - date('i')),0);
 
 		$web = $fields[6];
 
-		$distance = getDistance($mylat,$mylng,$fields[7],$fields[8]);
-
-		//function Place($name, $id, $rating, $distance, $hour, $price, $web, $visited)
+		if($nodist==0)
+		$distance = getDistance(($mylat),($mylng),($fields[7]),($fields[8]));
+		else
+		$distance = 0;
+		
+//function Place($name, $id, $rating, $distance, $hour, $price, $web, $visited)
 
 		$place = new Place($name, $id,$rating,$distance, $hour, $price,  $web,0);
 echo count($places);
 
 		array_push($places,$place);
 
-//print_r($places);	
 	$max_hour = max($max_hour,$hour);
 		$min_hour = min($min_hour,$hour);	
 
@@ -131,14 +137,12 @@ echo count($places);
 		*/
 	}
 
-	echo "array get";
-
-$pair = array();
+	echo "count places:";
 
 echo count($places);
 echo "<br>";
-echo $max_dis,$min_dis;
-echo "<br>";
+echo $max_dis."<br>";
+echo $min_dis;
 echo "<br>";
 	for($i=0; $i<count($places); $i++){
 $place1 = $places[$i];
@@ -146,20 +150,19 @@ $place1->hour = ($place1->hour-$min_hour)/($max_hour-$min_hour+1);
 		$place1->visited = $places[$i]->visited/$max_visited;
 
 		$place1->distance=($palce1->distance-$min_dis)/($max_dis-$min_dis+0.000000001);
-		
 
 		if(empty($Bdistance) && empty($Bprice)){
-			$place1->score = $place1->op4;
+			$place1->score = 0.4 * $place1->rate + 0.3 * $place1->hour + 0.3 * $place1->visited;
 
 		}
 		else if(empty($Bdistance) && !empty($Bprice)){
-			$place1->score = $place1->op3;
+			$place1->score = 0.3 * $place1->rate + 0.3 * $place1->price + 0.3 * $place1->hour + 0.1 * $place1->visited;
 		}
 		else if (!empty($Bdistance) && empty($Bprice)){
-			$place1->score = $place1->op2;
+			$place1->score = 0.3 * $place1->rate + 0.3 * $place1->distance + 0.3 * $place1->hour + 0.1 * $place1->visited;
 		}
 		else{
-			$place1->score = $place1->op1;
+			$place1->score = 0.3 * $place1->rate + 0.2 * $place1->distance + 0.2 * $place1->hour + 0.2 * $place1->price +0.1 * $place1->visited;
 		}
 		array_push($pair, $place1->score);
 print_r($place1);
