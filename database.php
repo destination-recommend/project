@@ -44,8 +44,15 @@ mysql_query($sql,$con);
 mysql_query("INSERT INTO information (FirstName,LastName,Age) 
 VALUES ('Peter', 'Green', '3')");
  */
- 
- 
+$query = "INSERT INTO Persons "."(FirstName,LastName, Age) ". "VALUES "."('Peter','Green','3')";
+mysql_select_db('my_rds');
+$retval = mysql_query( $query, $con);
+if(!$retval )
+{
+  die('Could not enter data: ' . mysql_error());
+}
+echo "Entered data successfully";
+
  
  
  
