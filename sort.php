@@ -76,7 +76,7 @@ $places = array();      // array of object PLACE  "places"
 
 	$max_hour = 0;
 	$min_hour = 1440;
-	$max_visited = 1;
+	$max_visited = 0;
 
 	$max_dis=0;
 	$min_dis=1000;
@@ -163,16 +163,20 @@ echo '<br>';
 echo '<br>';
 		$visited = 0;
 		/*跟数据库的place_id进行比较 如果存在 就把visit提出来*/
-	$mysql_select_db("my_rds", $con);
-		$query= "SELECT * FROM Information where PlaceID ='$place_id'";
-$entry= mysql_query($query, $con);
-while($row = mysql_fetch_array($entry))
-  {
-  $visited = $row['VisitedTimes'];
-  echo $row['VisitedTimes'];
-  echo "<br />";
+	mysql_select_db("my_rds", $con);
+		$query= "SELECT * FROM Information WHERE PlaceID ='$id'";
+$entry= mysql_query($query);
+if(mysql_num_rows($entry)>0){
+	while($row = mysql_fetch_array($entry))
+  	{
+  	$visited = $row['VisitedTimes'];
+  	echo $row['VisitedTimes'];
+  	echo "<br />";
 
- }
+ 	}
+}
+echo "visited first is:".$visited."!!!!!!!!!!!!!!!!!!!!!!!!"."<br><br>";
+echo $id."this is id...........";
 
 		$max_visited = max($max_visited,$visited);
 		//function Place($name, $id, $rating, $distance, $hour, $price, $web, $visited)
@@ -201,7 +205,8 @@ $pair = array();
 	for($i=0; $i<count($places); $i++){
 $place1 = $places[$i];
 $place1->hour = ($place1->hour-$min_hour)/($max_hour-$min_hour+1);
-		$place1->visited = $places[$i]->visited/$max_visited;
+if($max_visited>0)
+	$place1->visited = $places[$i]->visited/$max_visited;
 echo '<br>';
 echo $place1->visited;
 echo '<br>';
@@ -271,18 +276,27 @@ echo $places[$key]->web."<br>";
 echo $places[$key]->score."<br>";
 
 $place_id = $places[$key]->id;
-$visited = $places[$key]->visited;
+$times =$places[$key]->visited * $max_visited; 
+echo $times;
+$times=$times+1;
+echo "add 1 to visited~~~~~~~~~~~";
+echo $times;
+//echo "<br><br>";
+
 if($places[$key]->visited == 0){
 	// insert
-$query = "INSERT INTO Information "."(PlaceID,VisitedTimes) ". "VALUES "."('$placeID','1')";
-mysql_select_db('my_rds');
-mysql_query( $query, $con);
+mysql_select_db('my_rds',$con);
+//mysql_query( $query, $con);
+mysql_query("INSERT INTO Information "."(PlaceID,VisitedTimes) ". "VALUES "."('$place_id','1')");
 } else {
 	// update
 	
 	mysql_select_db("my_rds", $con);
-mysql_query("UPDATE Information SET VisitedTimes = '$visited+1'
-WHERE PlaceID = '$place_id' ");
+//$visited=$visited+1;
+echo "visited is now!!!!!!";
+echo $times;
+echo "<br><br>";
+mysql_query("UPDATE Information SET VisitedTimes = '$times' WHERE PlaceID = '$place_id' ");
 }
 
 
@@ -300,7 +314,7 @@ echo "<br><br><br>";
 echo "end";
 */
 
-$show=`python try.py $outcome`;
+$show=`python crawl.py $outcome`;
 echo $show;
 ?>
 
