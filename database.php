@@ -20,7 +20,7 @@ if (mysqli_connect_errno($con))
  echo "success";
  echo "<br />";
  
-if (mysql_query("CREATE DATABASE my_rds ",$con))
+/*if (mysql_query("CREATE DATABASE my_rds ",$con))
   {
   echo "Database created";
   echo "<br />";
@@ -38,12 +38,12 @@ PlaceID varchar(45),
 VisitedTimes int
 )";
 mysql_query($sql,$con);
-
+*/
 
 // insert 
 $placeID = "164276";
 $times = 3;
-$query = "INSERT INTO Information "."(PlaceID,VisitedTimes) ". "VALUES "."('$placeID','$times')";
+//$query = "INSERT INTO Information "."(PlaceID,VisitedTimes) ". "VALUES "."('$placeID','$times')";
 $query2 = "INSERT INTO Information "."(PlaceID,VisitedTimes) ". "VALUES "."('88ubhba9,'8')";
 $query3 = "INSERT INTO Information "."(PlaceID,VisitedTimes) ". "VALUES "."('228rbhaf','12')";
 $query4 = "INSERT INTO Information "."(PlaceID,VisitedTimes) ". "VALUES "."('0083sdvsap','30')";
@@ -63,12 +63,21 @@ echo "Entered data successfully";
 mysql_select_db("my_rds", $con);
 $qu= "SELECT * FROM Information where PlaceID ='$placeID' and VisitedTimes ='$times'";
 $result= mysql_query($qu, $con);
+if(mysql_num_rows($result)==0){
+$newrow= "INSERT INTO Information "."(PlaceID,VisitedTimes) ". "VALUES "."('$placeID','1')";
+mysql_query($newrow,$con);
+ }
+
+else{
 while($row = mysql_fetch_array($result))
   {
   echo $row['VisitedTimes'];
   echo "<br />";
- 
  }
+ }
+ 
+ 
+ 
  //update
 mysql_select_db("my_rds", $con);
 mysql_query("UPDATE Information SET VisitedTimes = '36'
