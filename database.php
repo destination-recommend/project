@@ -20,7 +20,7 @@ if (mysqli_connect_errno($con))
  echo "success";
  echo "<br />";
  
-if (mysql_query("CREATE DATABASE my_rds ",$con))
+/*if (mysql_query("CREATE DATABASE my_rds ",$con))
   {
   echo "Database created";
   echo "<br />";
@@ -38,7 +38,7 @@ PlaceID varchar(45),
 VisitedTimes int
 )";
 mysql_query($sql,$con);
-
+*/
 
 // insert 
 $placeID = "164276";
