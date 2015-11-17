@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<body>
 <?php
 date_default_timezone_set('America/Los_Angeles');
 
@@ -22,20 +25,19 @@ $txt = $_GET['text'];
 		return $dis;
 	}
 
-        $servername = "myEE542";
-	$username = "EE542";
-	$password = "1118";
-	$dbname = "mydb";
-
+$mysql_server_name="myeeb542.c2e3gz3tqbsa.us-west-1.rds.amazonaws.com:3306" ;
+$mysql_username="myeeb542";
+$mysql_password="myeeb542";
+$mysql_database="myeeb542";
 
 //	echo 'welecome to php';
    
-//dbname = mydb; fields: place_id, place_name, visited
-//	$conn = new mysqli($servername, $username, $password, $dbname);
-//	if($conn->connect_error){
-//		echo("Connect failed:" . $conn->connect_error);
-//	}
-//	echo "Connected successfully";
+$con = mysql_connect($mysql_server_name,$mysql_username,$mysql_password); // connect to database
+
+if (!$con)
+  {
+  die('Could not connect: ' . mysql_error());
+  }
 
 //$Bdistance = $_POST['distance'];
 //	$Bprice = $_POST['price'];
@@ -159,14 +161,25 @@ echo "min dis is:";
 echo $min_dis;
 echo '<br>';
 echo '<br>';
-		/*跟数据库的place_id进行比较 如果存在 就把visit提出来
-		$sql = "SELECT visited FROM mydb WHERE id = $place_id";
-		$result = $conn -> query($sql);
-		if ($result > 0){
-			$visited = $result;
-		}
+		$visited = 0;
+		/*跟数据库的place_id进行比较 如果存在 就把visit提出来*/
+	$mysql_select_db("my_rds", $con);
+		$query= "SELECT * FROM Information where PlaceID ='$place_id'";
+$entry= mysql_query($query, $con);
+while($row = mysql_fetch_array($entry))
+  {
+  $visited = $row['VisitedTimes'];
+  echo $row['VisitedTimes'];
+  echo "<br />";
+
+ }
+
 		$max_visited = max($max_visited,$visited);
-		*/
+		//function Place($name, $id, $rating, $distance, $hour, $price, $web, $visited)
+                $place = new Place($name, $id,$rating,$distance, $hour, $price,  $web,$visited);
+		//echo count($places);
+
+                array_push($places,$place);		
 	}
 
 //	echo "count places:";
@@ -256,6 +269,25 @@ echo $places[$key]->hour."<br>";
 echo $places[$key]->price."<br>";
 echo $places[$key]->web."<br>";
 echo $places[$key]->score."<br>";
+
+$place_id = $places[$key]->id;
+$visited = $places[$key]->visited;
+if($places[$key]->visited == 0){
+	// insert
+$query = "INSERT INTO Information "."(PlaceID,VisitedTimes) ". "VALUES "."('$placeID','1')";
+mysql_select_db('my_rds');
+mysql_query( $query, $con);
+} else {
+	// update
+	
+	mysql_select_db("my_rds", $con);
+mysql_query("UPDATE Information SET VisitedTimes = '$visited+1'
+WHERE PlaceID = '$place_id' ");
+}
+
+
+$outcome = $places[$key]->web;
+
   //   zheng($outcome->website);
 echo "<br><br><br>";
 /*
@@ -268,4 +300,10 @@ echo "<br><br><br>";
 echo "end";
 */
 
+$show=`python try.py $outcome`;
+echo $show;
 ?>
+
+
+</body>
+</html>
