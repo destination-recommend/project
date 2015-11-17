@@ -94,6 +94,8 @@
 
   var usr = gup('usr');
   var keyword = gup('keyword');
+  var mylat = gup('mylat');
+  var mylng = gup('mylng');
   var placesInfo; 
  
   var map;
@@ -101,13 +103,13 @@
 
   function initMap() {
     // LA
-    var LA = {lat: 34.0800, lng: -118.2500};
+    //var LA = {lat: 34.0800, lng: -118.2500};
 
-    //var LA = {mylat, mylng};
+    var LA = {mylat, mylng};
 
     map = new google.maps.Map(document.getElementById('map'), {
       center: LA,
-      zoom: 15
+      zoom: 10
     });
 
     infowindow = new google.maps.InfoWindow();
@@ -187,10 +189,10 @@
   function output() {
     //var text = 'usr:'+usr+' '+'keyword:'+keyword+'\n'+placesInfo+'end'+'\n';
     var text = placesInfo+'\n';
-    alert(text);
+    //alert(text);
 
-    mylat=34.0800;
-    mylng=-118.2500;
+    //mylat=34.0800;
+    //mylng=-118.2500;
 
     var myinfo = mylat + '|' + mylng+'\n';
 var source = "sort.php?myinfo=" + myinfo + "&text=" + text;
@@ -199,6 +201,10 @@ document.getElementById("out").src = source;
   //  document.write("<iframe width=1200 height=500 src=\"sort.php?myinfo="+myinfo+"&text=" + text + "\"></iframe>");
     //document.write("<iframe src=\"save_text.php?text=" + text + "\" width=0 height=0></iframe>");
 document.getElementById("img1").src = "pic_txt/0.jpg";
+document.getElementById("img1").src = "pic_txt/1.jpg";
+document.getElementById("img1").src = "pic_txt/2.jpg";
+document.getElementById("img1").src = "pic_txt/3.jpg";
+document.getElementById("img1").src = "pic_txt/4.jpg";
   }
   </script>
 
