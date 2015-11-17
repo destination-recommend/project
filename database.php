@@ -32,32 +32,27 @@ else
 
 // Create table in database
 mysql_select_db("my_rds", $con);
-$sql = "CREATE TABLE Persons 
+$sql = "CREATE TABLE Information 
 (
-FirstName varchar(15),
-LastName varchar(15),
-Age int
+PlaceID varchar(45),
+VisitedTimes int
 )";
 mysql_query($sql,$con);
 
 
- 
-$fn = "Peter";
-$ln = "Green";
-$age =3;
-$query = "INSERT INTO Persons "."(FirstName,LastName, Age) ". "VALUES "."('$fn','$ln','$age')";
-$query2 = "INSERT INTO Persons "."(FirstName,LastName, Age) ". "VALUES "."('Jim','Brown','78')";
-$query3 = "INSERT INTO Persons "."(FirstName,LastName, Age) ". "VALUES "."('Neal','Black','89')";
-$query4 = "INSERT INTO Persons "."(FirstName,LastName, Age) ". "VALUES "."('Alice','White','67')";
-$query5 = "INSERT INTO Persons "."(FirstName,LastName, Age) ". "VALUES "."('Kim','Bin','23')";
-$query6 = "INSERT INTO Persons "."(FirstName,LastName, Age) ". "VALUES "."('Join','Tou','12')";
+// insert 
+$placeID = "164276";
+$times = 3;
+$query = "INSERT INTO Information "."(PlaceID,VisitedTimes) ". "VALUES "."('$placeID','$times')";
+$query2 = "INSERT INTO Information "."(PlaceID,VisitedTimes) ". "VALUES "."('88ubhba9,'8')";
+$query3 = "INSERT INTO Information "."(PlaceID,VisitedTimes) ". "VALUES "."('228rbhaf','12')";
+$query4 = "INSERT INTO Information "."(PlaceID,VisitedTimes) ". "VALUES "."('0083sdvsap','30')";
 mysql_select_db('my_rds');
-$retval = mysql_query( $query, $con);
+mysql_query( $query, $con);
 mysql_query( $query2, $con);
 mysql_query( $query3, $con);
 mysql_query( $query4, $con);
-mysql_query( $query5, $con);
-mysql_query( $query6, $con);
+
 /*if(!$retval )
 {
   die('Could not enter data: ' . mysql_error());
@@ -66,18 +61,18 @@ echo "Entered data successfully";
 */
  //select
 mysql_select_db("my_rds", $con);
-$qu= "SELECT * FROM Persons where FirstName ='$fn' and LastName ='$ln'";
+$qu= "SELECT * FROM Information where PlaceID ='$placeID' and VisitedTimes ='$times'";
 $result= mysql_query($qu, $con);
 while($row = mysql_fetch_array($result))
   {
-  echo $row['Age'];
+  echo $row['VisitedTimes'];
   echo "<br />";
  
  }
  //update
-mysql_select_db("my_db", $con);
-mysql_query("UPDATE Persons SET Age = '36'
-WHERE FirstName = '$fn' AND LastName = '$ln'");
+mysql_select_db("my_rds", $con);
+mysql_query("UPDATE Information SET VisitedTimes = '36'
+WHERE PlaceID = '$placeID' AND VisitedTimes = '$times'");
  
  
  
