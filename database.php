@@ -63,17 +63,21 @@ echo "Entered data successfully";
 mysql_select_db("my_rds", $con);
 $qu= "SELECT * FROM Information where PlaceID ='$placeID' and VisitedTimes ='$times'";
 $result= mysql_query($qu, $con);
-if(mysql_num_rows($result){
+if(mysql_num_rows($result)==0){
+$newrow= "INSERT INTO Information "."(PlaceID,VisitedTimes) ". "VALUES "."('$placeID','1')";
+mysql_query($newrow,$con);
+ }
+
+else{
 while($row = mysql_fetch_array($result))
   {
   echo $row['VisitedTimes'];
   echo "<br />";
  }
  }
- else{
- $newrow= "INSERT INTO Information "."(PlaceID,VisitedTimes) ". "VALUES "."('$placeID','1')";
- mysql_query($newrow,$con);
- }
+ 
+ 
+ 
  //update
 mysql_select_db("my_rds", $con);
 mysql_query("UPDATE Information SET VisitedTimes = '36'
