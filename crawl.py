@@ -1,4 +1,4 @@
-#terminal python crawl.py "http://url"  http://www.changoechopark.com
+# -*- coding: utf-8 -*-
 #terminal python crawl.py "http://url"
 import re
 import urllib
@@ -10,7 +10,7 @@ import HTMLParser
 
 class Spider_model:
     def _init_(self):
-        os.chdir(r"/var/www/html") # I need change this directory!!!!!!!!!!!
+        #os.chdir(r"/Users/zhengqingqing/Desktop/try") # I need change this directory!!!!!!!!!!!
         newpath=r'pic_txt'
         if os.path.exists(newpath):
             shutil.rmtree(newpath)
@@ -27,16 +27,26 @@ class Spider_model:
         return link_lists
 
     def getImg(self,html): #get image
-        reg=r'src="(.+?\.jpg)"' #need modify this to select image
+        reg=r'src="(((?!>).)+?\.png|((?!>).)+?\.jpg)"' #need modify this to select image
         imgre=re.compile(reg)
         imglist=re.findall(imgre,html)
         x=0
-        for imgurl in imglist:
-            urllib.urlretrieve(imgurl,'%s.jpg'%x)	
-            print 'image %s.jpg done'%x	
+        for imgurl_tuple in imglist:
+            imgurl=imgurl_tuple[0]
+            print imgurl
+            if imgurl[:3]!='htt':
+                imgurl='https:'+imgurl
+            print imgurl
+            if imgurl[-3:]=='jpg':
+                urllib.urlretrieve(imgurl,'%s.jpg'%x)	
+                print 'image %s.jpg done'%x	
+            elif imgurl[-3:]=='png':
+                urllib.urlretrieve(imgurl,'%s.png'%x)   
+                print 'image %s.png done'%x 
             x+=1
             if(x>=30):
                 break
+        return x
     
     def getTxt(self,html):
         #reg=r'[^>]*% [oO]ff[^<]*'
@@ -61,17 +71,21 @@ class Spider_model:
             file.write(item)
             file.write('\n')
         #capture the next page's text
+        count=0
         for item in htmllist:
-            if item[0]=='h':
-                print item
-                newhtml=self.getHtml(item)
-                newdatalist=self.getTxt(newhtml)
-                for item in newdatalist:
-                    file.write(item)
-                    file.write('\n')
+            if(count<10):
+                if item[0]=='h':
+                    print item
+                    count+=1
+                    newhtml=self.getHtml(item)
+                    newdatalist=self.getTxt(newhtml)
+                    for item in newdatalist:
+                        file.write(item)
+                        file.write('\n')
         file.close()
-        
-        #print self.getImg(html)
+        imgCount=self.getImg(html)
+        os.chdir(r"/var/www/html/")
+        return imgCount
 
     
 
@@ -83,4 +97,3 @@ myModel._init_()
 print 'Start to capture content in web..'
 myModel.Start(url)
 print 'Done...check pic_txt folder to get information'
-
