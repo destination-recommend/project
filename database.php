@@ -46,8 +46,18 @@ $fn = "Peter";
 $ln = "Green";
 $age =3;
 $query = "INSERT INTO Persons "."(FirstName,LastName, Age) ". "VALUES "."('$fn','$ln','$age')";
+$query2 = "INSERT INTO Persons "."(FirstName,LastName, Age) ". "VALUES "."('Jim','Brown','78')";
+$query3 = "INSERT INTO Persons "."(FirstName,LastName, Age) ". "VALUES "."('Neal','Black','89')";
+$query4 = "INSERT INTO Persons "."(FirstName,LastName, Age) ". "VALUES "."('Alice','White','67')";
+$query5 = "INSERT INTO Persons "."(FirstName,LastName, Age) ". "VALUES "."('Kim','Bin','23')";
+$query6 = "INSERT INTO Persons "."(FirstName,LastName, Age) ". "VALUES "."('Join','Tou','12')";
 mysql_select_db('my_rds');
 $retval = mysql_query( $query, $con);
+mysql_query( $query2, $con);
+mysql_query( $query3, $con);
+mysql_query( $query4, $con);
+mysql_query( $query5, $con);
+mysql_query( $query6, $con);
 /*if(!$retval )
 {
   die('Could not enter data: ' . mysql_error());
