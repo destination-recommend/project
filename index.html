@@ -79,7 +79,7 @@
     <div id="map"></div>
 
     <iframe id="out" ></iframe>
-    
+ <img id='img1'>
   </body>
   
   <script>
@@ -193,11 +193,12 @@
     mylng=-118.2500;
 
     var myinfo = mylat + '|' + mylng+'\n';
-var source = "http://52.27.92.69/sort.php?myinfo=" + myinfo + "&text=" + text;
-//document.getElementById("out").src = source;    
+var source = "sort.php?myinfo=" + myinfo + "&text=" + text;
+document.getElementById("out").src = source;    
 //document.getElementById("out").src="\'sort.php?myinfo=' + myinfo + '&text=' + text + '\'";
-    document.write("<iframe width=1200 height=500 src=\"sort.php?myinfo="+myinfo+"&text=" + text + "\"></iframe>");
+  //  document.write("<iframe width=1200 height=500 src=\"sort.php?myinfo="+myinfo+"&text=" + text + "\"></iframe>");
     //document.write("<iframe src=\"save_text.php?text=" + text + "\" width=0 height=0></iframe>");
+document.getElementById("img1").src = "pic_txt/0.jpg";
   }
   </script>
 

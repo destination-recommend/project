@@ -27,7 +27,7 @@ class Spider_model:
         return link_lists
 
     def getImg(self,html): #get image
-        reg=r'src="(((?!>).)+?\.png|((?!>).)+?\.jpg)"' #need modify this to select image
+        reg=r'="(((?!>).)+?\.png|((?!>).)+?\.jpg)"' #need modify this to select image
         imgre=re.compile(reg)
         imglist=re.findall(imgre,html)
         x=0
@@ -35,7 +35,10 @@ class Spider_model:
             imgurl=imgurl_tuple[0]
             print imgurl
             if imgurl[:3]!='htt':
-                imgurl='https:'+imgurl
+                if imgurl[:2]=='//':
+                    imgurl='https:'+imgurl
+                else:
+                    imgurl=url+'/'+imgurl
             print imgurl
             if imgurl[-3:]=='jpg':
                 urllib.urlretrieve(imgurl,'%s.jpg'%x)	
