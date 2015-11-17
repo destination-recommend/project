@@ -54,9 +54,9 @@ $retval = mysql_query( $query, $con);
 }
 echo "Entered data successfully";
 */
- 
+ //select
 mysql_select_db("my_rds", $con);
-$qu= "SELECT * FROM Persons where FirstName ='Peter' and LastName ='Green'";
+$qu= "SELECT * FROM Persons where FirstName ='$fn' and LastName ='$ln'";
 $result= mysql_query($qu, $con);
 while($row = mysql_fetch_array($result))
   {
@@ -64,6 +64,11 @@ while($row = mysql_fetch_array($result))
   echo "<br />";
  
  }
+ //update
+mysql_select_db("my_db", $con);
+mysql_query("UPDATE Persons SET Age = '36'
+WHERE FirstName = '$fn' AND LastName = '$ln'");
+ 
  
  
  
