@@ -113,18 +113,18 @@ $places = array();      // array of object PLACE  "places"
 			$close_time = $fields[4];
 		}
 		$hour = max(((int)$close_time/100 - date('H')),0)*60+max(((int)$close_time%100 - date('i')),0);
-echo date('H');
-echo " ".date('i');
-echo '<br>';
-echo "close time is:";
-echo $close_time;
-echo "    ".date('H').date('i');
-echo '<br>';
-echo (int)$close_time/100 - date('H');
-echo '<br>';
-echo "hour is:";
-echo $hour;
-echo '<br>';
+//echo date('H');
+//echo " ".date('i');
+//echo '<br>';
+//echo "close time is:";
+//echo $close_time;
+//echo "    ".date('H').date('i');
+//echo '<br>';
+//echo (int)$close_time/100 - date('H');
+//echo '<br>';
+//echo "hour is:";
+//echo $hour;
+//echo '<br>';
 		$web = $fields[6];
 
 		if($nodist==0){
@@ -132,11 +132,11 @@ echo '<br>';
 		else{
 			$distance = 0;}
 	
-echo "lat is:".$fields[7]."lng is:".$fields[8];
-echo '<br>';
-echo "distance is:";
-echo $distance;
-echo '<br>';	
+//echo "lat is:".$fields[7]."lng is:".$fields[8];
+//echo '<br>';
+//echo "distance is:";
+//echo $distance;
+//echo '<br>';	
 //function Place($name, $id, $rating, $distance, $hour, $price, $web, $visited)
 
 		$place = new Place($name, $id,$rating,$distance, $hour, $price,  $web,0);
@@ -145,22 +145,22 @@ echo '<br>';
 		array_push($places,$place);
 
 	$max_hour = max($max_hour,$hour);
-echo "max hour is:";
-echo $max_hour;
-echo '<br>';
+//echo "max hour is:";
+//echo $max_hour;
+//echo '<br>';
 		$min_hour = min($min_hour,$hour);	
-echo "min hour is:";
-echo $min_hour;
-echo '<br>';
+//echo "min hour is:";
+//echo $min_hour;
+//echo '<br>';
 		$max_dis=max($distance,$max_dis);
-echo "max dis is:";
-echo $max_dis;
-echo '<br>';	
+//echo "max dis is:";
+//echo $max_dis;
+//echo '<br>';	
 	$min_dis=min($distance,$min_dis);
-echo "min dis is:";
-echo $min_dis;
-echo '<br>';
-echo '<br>';
+//echo "min dis is:";
+//echo $min_dis;
+//echo '<br>';
+//echo '<br>';
 		$visited = 0;
 		/*跟数据库的place_id进行比较 如果存在 就把visit提出来*/
 	mysql_select_db("my_rds", $con);
@@ -170,13 +170,13 @@ if(mysql_num_rows($entry)>0){
 	while($row = mysql_fetch_array($entry))
   	{
   	$visited = $row['VisitedTimes'];
-  	echo $row['VisitedTimes'];
-  	echo "<br />";
+  	//echo $row['VisitedTimes'];
+  	//echo "<br />";
 
  	}
 }
-echo "visited first is:".$visited."!!!!!!!!!!!!!!!!!!!!!!!!"."<br><br>";
-echo $id."this is id...........";
+//echo "visited first is:".$visited."!!!!!!!!!!!!!!!!!!!!!!!!"."<br><br>";
+//echo $id."this is id...........";
 
 		$max_visited = max($max_visited,$visited);
 		//function Place($name, $id, $rating, $distance, $hour, $price, $web, $visited)
@@ -194,11 +194,11 @@ echo $id."this is id...........";
 //echo $min_dis;
 //echo "<br>";
 
-echo $Bdistance==1;
-echo '<br>';
-echo $Bprice==1;
-echo '<br>';
-echo "end";
+//echo $Bdistance==1;
+//echo '<br>';
+//echo $Bprice==1;
+//echo '<br>';
+//echo "end";
 
 $pair = array();
 
@@ -207,19 +207,19 @@ $place1 = $places[$i];
 $place1->hour = ($place1->hour-$min_hour)/($max_hour-$min_hour+1);
 if($max_visited>0)
 	$place1->visited = $places[$i]->visited/$max_visited;
-echo '<br>';
-echo $place1->visited;
-echo '<br>';
-echo "before normal:".$place1->distance."<br>";
-echo "max dis is:".$max_dis;
-echo '<br>';
+//echo '<br>';
+//echo $place1->visited;
+//echo '<br>';
+//echo "before normal:".$place1->distance."<br>";
+//echo "max dis is:".$max_dis;
+//echo '<br>';
         $min_dis=min($distance,$min_dis);
-echo "min dis is:".$min_dis;
-echo '<br>';
-echo ($place1->distance-$min_dis)."<br>";
-echo ($max_dis-$min_dis+0.000000001)."<br>";
+//echo "min dis is:".$min_dis;
+//echo '<br>';
+//echo ($place1->distance-$min_dis)."<br>";
+//echo ($max_dis-$min_dis+0.000000001)."<br>";
 		$place1->distance=($place1->distance-$min_dis+0.0000000001)/($max_dis-$min_dis+0.000000001);
-echo "distance is:".$place1->distance."<br>";
+//echo "distance is:".$place1->distance."<br>";
 
 //if (empty($_POST["website"])) 
 	//	if(empty($Bdistance) && empty($Bprice)){
@@ -236,16 +236,16 @@ echo "distance is:".$place1->distance."<br>";
 			$place1->score = 0.3 * $place1->rate + 0.2 * $place1->distance + 0.2 * $place1->hour + 0.2 * $place1->price +0.1 * $place1->visited;
 		}
 
-echo "score is :".$place1->score."<br>";
+//echo "score is :".$place1->score."<br>";
 		array_push($pair, $place1->score);
 print_r($place1);
-echo "<br><br>";
+//echo "<br><br>";
 //echo '<br>';
 	}
 
 
 arsort($pair);
-echo "<br>";
+//echo "<br>";
 
 //result=array();
 
@@ -257,14 +257,14 @@ foreach($pair as $x=>$x_value)
 	break;
     }
 print_r($pair);
-echo "<br>";
+//echo "<br>";
   //$outcome=$pair[0];
 $outcome = reset($pair);
 $key = array_search($outcome,$pair);
-echo $outcome;
-echo "<br>";
-echo $key;
-echo "<br>";
+//echo $outcome;
+//echo "<br>";
+//echo $key;
+//echo "<br>";
 
 echo $places[$key]->name."<br>";
 echo $places[$key]->id."<br>";
@@ -277,10 +277,10 @@ echo $places[$key]->score."<br>";
 
 $place_id = $places[$key]->id;
 $times =$places[$key]->visited * $max_visited; 
-echo $times;
+//echo $times;
 $times=$times+1;
-echo "add 1 to visited~~~~~~~~~~~";
-echo $times;
+//echo "add 1 to visited~~~~~~~~~~~";
+//echo $times;
 //echo "<br><br>";
 
 if($places[$key]->visited == 0){
@@ -293,9 +293,9 @@ mysql_query("INSERT INTO Information "."(PlaceID,VisitedTimes) ". "VALUES "."('$
 	
 	mysql_select_db("my_rds", $con);
 //$visited=$visited+1;
-echo "visited is now!!!!!!";
-echo $times;
-echo "<br><br>";
+//echo "visited is now!!!!!!";
+//echo $times;
+//echo "<br><br>";
 mysql_query("UPDATE Information SET VisitedTimes = '$times' WHERE PlaceID = '$place_id' ");
 }
 
@@ -303,7 +303,7 @@ mysql_query("UPDATE Information SET VisitedTimes = '$times' WHERE PlaceID = '$pl
 $outcome = $places[$key]->web;
 
   //   zheng($outcome->website);
-echo "<br><br><br>";
+//echo "<br><br><br>";
 /*
 	echo $outcome->name."<br>";
 	echo $outcome->id."<br>";
@@ -316,8 +316,9 @@ echo "end";
 
 $show=`python crawl.py $outcome`;
 //echo $show;
+echo `cat pic_txt/content.txt`;
 $log = fopen("log","a");
-$size = `du -c pic_txt/* | grep total`;
+$size = `du pic_txt | grep total`;
 fwrite($log,$size);
 fclose($log);
 echo($size);
