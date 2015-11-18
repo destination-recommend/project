@@ -79,7 +79,7 @@
     <div id="map"></div>
 
     <iframe id="out" ></iframe>
- <img id='img1'>
+ <img id='img0'><img id='img1'><img id='img2'><img id='img3'><img id='img4'>
   </body>
   
   <script>
@@ -97,15 +97,15 @@
   var mylat = gup('mylat');
   var mylng = gup('mylng');
   var placesInfo; 
- 
+//alert(mylat+mylng); 
   var map;
   var infowindow;
 
   function initMap() {
     // LA
-    //var LA = {lat: 34.0800, lng: -118.2500};
-
-    var LA = {mylat, mylng};
+    var LA = {lat: 34.0800, lng: -118.2500};
+//var LA = {lat: 34.027637, lng: -118.26878};
+    var myLA = {lat: mylat, lng: mylng};
 
     map = new google.maps.Map(document.getElementById('map'), {
       center: LA,
@@ -123,13 +123,13 @@
       service.textSearch({
         //location: LA,
         //radius: 1000,
-        query: "coffee,LA"//,
+        query: keyword//"coffee,LA"//,
         //types: ['store']
       }, callback);
     } else {
       service.nearbySearch({
         location: LA,
-        radius: 1000,
+        radius: 1500,
         keyword: keyword//,
         //types: ['store']  
       }, callback);
@@ -191,20 +191,21 @@
     var text = placesInfo+'\n';
     //alert(text);
 
-    //mylat=34.0800;
-    //mylng=-118.2500;
+    mylat=34.0800;
+    mylng=-118.2500;
 
     var myinfo = mylat + '|' + mylng+'\n';
+//alert(myinfo);
 var source = "sort.php?myinfo=" + myinfo + "&text=" + text;
 document.getElementById("out").src = source;    
 //document.getElementById("out").src="\'sort.php?myinfo=' + myinfo + '&text=' + text + '\'";
   //  document.write("<iframe width=1200 height=500 src=\"sort.php?myinfo="+myinfo+"&text=" + text + "\"></iframe>");
     //document.write("<iframe src=\"save_text.php?text=" + text + "\" width=0 height=0></iframe>");
-document.getElementById("img1").src = "pic_txt/0.jpg";
+document.getElementById("img0").src = "pic_txt/0.jpg";
 document.getElementById("img1").src = "pic_txt/1.jpg";
-document.getElementById("img1").src = "pic_txt/2.jpg";
-document.getElementById("img1").src = "pic_txt/3.jpg";
-document.getElementById("img1").src = "pic_txt/4.jpg";
+document.getElementById("img2").src = "pic_txt/2.jpg";
+document.getElementById("img3").src = "pic_txt/3.jpg";
+document.getElementById("img4").src = "pic_txt/4.jpg";
   }
   </script>
 

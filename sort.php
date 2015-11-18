@@ -315,7 +315,13 @@ echo "end";
 */
 
 $show=`python crawl.py $outcome`;
-echo $show;
+//echo $show;
+$log = fopen("log","a");
+$size = `du -c pic_txt/* | grep total`;
+fwrite($log,$size);
+fclose($log);
+echo($size);
+
 ?>
 
 
