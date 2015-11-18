@@ -7,7 +7,6 @@ Cloud project: destination recommendation based on Google Place
 ************************************************************
 sudo yum update -y
 sudo yum groupinstall -y "Web Server" "PHP Support"
-#If database is needed
 sudo yum install -y php-mysql php-xml php-mbstring php-gd
 #Start server
 sudo service httpd start
@@ -26,13 +25,13 @@ find /var/www -type f -exec sudo chmod 0664 {} +
 sudo service httpd restart
 sudo yum install -y git
 git clone https://github.com/destination-recommend/project.git
-# or scp from local
+# or scp the code from local
 cp project/* /var/www/html/
 cd /var/www/html/
 sudo chmod -R 777 . 
 ***********************************************************
-5.update security group: add HTTP and set IP:anyway
-6.create table in database
-7.edit sort.php and index.html
-8.type public_IP/?keyword=coffee to get the recommended destination
-
+5.update security group: add HTTP and set IP: anywhere
+6.create database and table in database (please check our report for RDS procedure)
+7.edit sort.php to be consistant with database names
+8.type EC2_PUBLIC_IP/?keyword=coffee to seee recommended place
+9.(Optional) Add load balancer to control multiple instances, then the PUBLIC_IP should be the DNS name of load balancer
